@@ -1,9 +1,9 @@
 <?php
 
-namespace Jacobcyl\AliOSS;
+namespace Losgif\AliOSS;
 
-use Jacobcyl\AliOSS\Plugins\PutFile;
-use Jacobcyl\AliOSS\Plugins\PutRemoteFile;
+use Losgif\AliOSS\Plugins\PutFile;
+use Losgif\AliOSS\Plugins\PutRemoteFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
@@ -40,12 +40,12 @@ class AliOssServiceProvider extends ServiceProvider
             $isCname   = empty($config['isCName']) ? false : $config['isCName'];
             $debug     = empty($config['debug']) ? false : $config['debug'];
 
-            $endPoint  = $config['endpoint']; // 默认作为外部节点
-            $epInternal= $isCname?$cdnDomain:(empty($config['endpoint_internal']) ? $endPoint : $config['endpoint_internal']); // 内部节点
+            $endPoint  = $config['endpoint']; // 默认作为公网节点
+            $endPoint= empty($config['endpoint_internal']) ? $endPoint : $config['endpoint_internal']; // 是否使用内网节点
             
             if($debug) Log::debug('OSS config:', $config);
 
-            $client  = new OssClient($accessId, $accessKey, $epInternal, $isCname);
+            $client  = new OssClient($accessId, $accessKey, $endPoint, $isCname);
             $adapter = new AliOssAdapter($client, $bucket, $endPoint, $ssl, $isCname, $debug, $cdnDomain);
 
             //Log::debug($client);
